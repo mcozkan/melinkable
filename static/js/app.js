@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Fetch categories for this user
-            const { data: catData, error: catError } = await window.supabase
+            const { data: catData, error: catError } = await supabase
                 .from('categories')
                 .select('*')
                 .eq('username', currentUser);
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // If they have no categories, create 'General' automatically
             if (!catData || catData.length === 0) {
-                const { data: newCat, error: insError } = await window.supabase
+                const { data: newCat, error: insError } = await supabase
                     .from('categories')
                     .insert([{ username: currentUser, name: 'General' }])
                     .select();
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Fetch links for this user
-            const { data: linkData, error: linkError } = await window.supabase
+            const { data: linkData, error: linkError } = await supabase
                 .from('links')
                 .select('*')
                 .eq('username', currentUser)
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Save to Supabase Cloud
-            const { data: insertedData, error } = await window.supabase
+            const { data: insertedData, error } = await supabase
                 .from('links')
                 .insert([{
                     username: currentUser,
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         saveCategoryBtn.innerText = '...';
         try {
-            const { data: newCatData, error } = await window.supabase
+            const { data: newCatData, error } = await supabase
                 .from('categories')
                 .insert([{ username: currentUser, name: name }])
                 .select();
@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Update the record in Supabase
-            const { error } = await window.supabase
+            const { error } = await supabase
                 .from('links')
                 .update({ notes: notes })
                 .eq('id', currentLinkIdInModal);
@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (confirm("Are you sure you want to delete this link?")) {
 
                     try {
-                        const { error } = await window.supabase
+                        const { error } = await supabase
                             .from('links')
                             .delete()
                             .eq('id', id);
