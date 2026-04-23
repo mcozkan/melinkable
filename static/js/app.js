@@ -8,45 +8,96 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- AUTHENTICATION & MULTI-USER LOGIC ---
-    let currentUser = localStorage.getItem('linkable_currentUser');
-
+    let currentUser = null;
+    
     // Auth Elements
     const loginScreen = document.getElementById('login-screen');
     const mainApp = document.getElementById('main-app');
     const loginForm = document.getElementById('login-form');
-    const loginUsernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const passInput = document.getElementById('password');
+    const authError = document.getElementById('auth-error');
+    const btnLogin = document.getElementById('btn-login');
+    const btnRegister = document.getElementById('btn-register');
     const displayUsername = document.getElementById('display-username');
     const logoutBtn = document.getElementById('logout-btn');
 
-    if (!currentUser) {
-        // Show login
-        loginScreen.classList.add('active');
-        mainApp.style.display = 'none';
-    } else {
-        // User logged in
-        loginScreen.classList.remove('active');
-        mainApp.style.display = 'flex';
-        displayUsername.innerText = currentUser;
-        initializeApp();
-    }
-
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = loginUsernameInput.value.trim().toLowerCase();
-        if (!username) return;
-
-        localStorage.setItem('linkable_currentUser', username);
-        currentUser = username;
-
-        loginScreen.classList.remove('active');
-        mainApp.style.display = 'flex';
-        displayUsername.innerText = currentUser;
-
-        initializeApp();
+    // Subscribe to Auth State Changes
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+            currentUser = session.user.email;
+            loginScreen.classList.remove('active');
+            mainApp.style.display = 'flex';
+            displayUsername.innerText = currentUser.split('@')[0]; // Show name part
+            initializeApp();
+        } else {
+            currentUser = null;
+            loginScreen.classList.add('active');
+            mainApp.style.display = 'none';
+        }
     });
 
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('linkable_currentUser');
+    const showError = (msg) => {
+        authError.style.display = 'block';
+        authError.innerText = msg;
+    };
+
+    // Form Submit (Login/Register)
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        let email = emailInput.value.trim();
+        let password = passInput.value.trim();
+
+        if (!email || !password) return showError("Please enter email and password.");
+
+        btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
+        btnLogin.disabled = true;
+        authError.style.display = 'none';
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email, password
+        });
+
+        if (error) {
+            showError(error.message);
+        }
+        
+        btnLogin.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Login';
+        btnLogin.disabled = false;
+    });
+
+    // Register Button Click
+    btnRegister.addEventListener('click', async () => {
+        let email = emailInput.value.trim();
+        let password = passInput.value.trim();
+
+        if (!email || password.length < 6) return showError("Valid email and min 6 char password required.");
+
+        btnRegister.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        btnRegister.disabled = true;
+        authError.style.display = 'none';
+
+        const { data, error } = await supabase.auth.signUp({
+            email, password
+        });
+
+        if (error) {
+            showError(error.message);
+        } else {
+            if (data.user && data.user.identities && data.user.identities.length === 0) {
+                showError("User already exists. Try logging in.");
+            } else {
+                showError("Registration successful! Check your email to confirm, or login if auto-confirm is enabled.");
+            }
+        }
+        
+        btnRegister.innerHTML = '<i class="fa-solid fa-user-plus"></i> Register';
+        btnRegister.disabled = false;
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+        await supabase.auth.signOut();
         window.location.reload();
     });
 
