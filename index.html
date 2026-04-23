@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linkable</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="app-container" id="main-app" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-link"></i>
+                <h2>Linkable</h2>
+            </div>
+            
+            <div class="categories-header">
+                <h3>Categories</h3>
+                <button id="add-category-btn" class="icon-btn"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <div id="new-category-form" style="display: none;">
+                <input type="text" id="new-category-input" placeholder="New category name..." />
+                <button id="save-category-btn">Save</button>
+            </div>
+            
+            <ul id="categories-list" class="categories-list">
+                <!-- Categories will be rendered here -->
+            </ul>
+
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+                    <span id="display-username" class="truncate">User</span>
+                </div>
+                <button id="logout-btn" class="icon-btn" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-nav">
+                <form id="add-link-form" class="add-link-form">
+                    <input type="url" id="link-url" placeholder="Paste a URL here to save..." required>
+                    <select id="link-category" required>
+                        <!-- Categories for select -->
+                    </select>
+                    <button type="submit" class="primary-btn">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Save Link
+                    </button>
+                </form>
+                <button id="theme-toggle-btn" class="icon-btn theme-toggle-btn" title="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </header>
+
+            <div class="content-area">
+                <h2 id="current-category-title" class="section-title">All Links</h2>
+                <div id="links-grid" class="links-grid">
+                    <!-- Links will be rendered here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notes Modal -->
+    <div id="notes-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-regular fa-comment-dots"></i> Link Notes</h3>
+                <button id="close-modal-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <h4 id="modal-link-title" class="truncate"></h4>
+                <a id="modal-link-url" href="#" target="_blank" class="truncate link-url-small"></a>
+                <textarea id="modal-notes-textarea" placeholder="Write your notes or info here..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="save-notes-btn" class="primary-btn">Save Notes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen active">
+        <div class="login-card">
+            <div class="logo justify-center">
+                <i class="fa-solid fa-link"></i>
+                <h2>Linkable</h2>
+            </div>
+            <p class="login-desc">Sign in or type a new username to create a workspace instantly.</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="e.g. johndoe" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="password">Security Pin (Optional)</label>
+                    <input type="password" id="password" placeholder="Any pin..." autocomplete="off">
+                </div>
+                <button type="submit" class="primary-btn w-full justify-center">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Login / Register
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="./static/js/app.js"></script>
+</body>
+</html>
