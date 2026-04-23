@@ -4,7 +4,11 @@ const SUPABASE_URL = 'https://kmfjtqyislinfcatnhjn.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttZmp0cXlpc2xpbmZjYXRuaGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NjgwODMsImV4cCI6MjA5MjU0NDA4M30.GNLtdJ4Dspwe_aoTDZMmnQrHEfOS0vCURhzVdWv4h_8';
 
 // Initialize Supabase Client (CDN loaded in index.html)
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+import {
+  createClient
+} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- AUTHENTICATION & MULTI-USER LOGIC ---
