@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html><head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head><body><script>
+    document.body.innerHTML = "keys: " + Object.keys(window.supabase || supabase).join(", ");
+    document.body.innerHTML += "<br>createClient type: " + typeof window.supabase.createClient;
+</script></body></html>
